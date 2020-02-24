@@ -13,3 +13,6 @@ The exact details for step 5:
 * Modify MainApplication.java and MainActivity.java
 * Modify AndroidManifest.xml according to https://dashboard.branch.io/start/existing-users/android and the repository README.md
 * Modify `android/app/proguard-rules.pro` with `-dontwarn io.branch.**`
+
+6. Verify that everything is working. At this point, `react-native run-android` and `react-native run-ios` still work, and branch should be installed.
+7. Add branch code. In our main project, we have a function that takes an object and generates a BUO for it, and returns the short URL for this BUO.

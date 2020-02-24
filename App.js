@@ -12,17 +12,13 @@ import {
   StyleSheet,
   ScrollView,
   View,
+  TouchableOpacity,
   Text,
   StatusBar,
 } from 'react-native';
+import branch from 'react-native-branch';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Header, Colors} from 'react-native/Libraries/NewAppScreen';
 
 const App: () => React$Node = () => {
   return (
@@ -40,36 +36,57 @@ const App: () => React$Node = () => {
           )}
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
+              <Text style={styles.sectionTitle}>Time to test</Text>
               <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
+                Press the button below to generate a Branch Universal Object,
+                and display a link for the object in an Alert window.
               </Text>
             </View>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
+              <TouchableOpacity
+                onPress={generateTestLink}
+                style={styles.touchable}>
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Go!</Text>
+                </View>
+              </TouchableOpacity>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
           </View>
         </ScrollView>
       </SafeAreaView>
     </>
   );
+};
+
+const generateTestLink = () => {
+  console.log('Generating link');
+  const canonicalID = 'test/SOME_TEST_ID1/SOME_TEST_ID2';
+  return branch
+    .createBranchUniversalObject(canonicalID, {
+      locallyIndex: true,
+      title: 'Some Test Title',
+      contentDescription: 'Check out this neat description!',
+      contentImageUrl: 'https://dummyimage.com/600x400/000/fff',
+      contentMetadata: {
+        customMetaData: {
+          pathData: 'some/database/path/needed/by/our/app',
+        },
+      },
+    })
+    .then(branchUniversalObject => {
+      console.log('BUO Generated');
+      const linkProperties = {feature: 'share', channel: 'branchtest'};
+      console.log('Generating short URL');
+      return branchUniversalObject.generateShortUrl(linkProperties);
+    })
+    .then(res => {
+      console.log('URL Generated.');
+      console.log(res.url);
+      return res.url;
+    })
+    .catch(e => {
+      console.error(e);
+    });
 };
 
 const styles = StyleSheet.create({
@@ -98,9 +115,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: Colors.dark,
   },
-  highlight: {
-    fontWeight: '700',
-  },
   footer: {
     color: Colors.dark,
     fontSize: 12,
@@ -108,6 +122,19 @@ const styles = StyleSheet.create({
     padding: 4,
     paddingRight: 12,
     textAlign: 'right',
+  },
+  touchable: {
+    flex: 1,
+  },
+  button: {
+    backgroundColor: '#4BC2E2',
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
+    flex: 1,
+  },
+  buttonText: {
+    color: '#FFFFFF',
   },
 });
 
